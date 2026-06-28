@@ -1,0 +1,6 @@
+{
+  "appId": "io.fortress.personalfinance",
+  "appName": "Fortress Personal Finance",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

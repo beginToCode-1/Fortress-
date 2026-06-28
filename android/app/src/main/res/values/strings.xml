@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Fortress Personal Finance</string>
+    <string name="title_activity_main">Fortress Personal Finance</string>
+    <string name="package_name">io.fortress.personalfinance</string>
+    <string name="custom_url_scheme">io.fortress.personalfinance</string>
+</resources>

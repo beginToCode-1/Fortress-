@@ -1,0 +1,8 @@
+{
+  "name": "Personal Finance Manager",
+  "description": "A dark-themed, responsive personal finance manager with multi-currency tracking, dynamic daily budget widgets, automated recurring transaction reminders, smart Gemini analysis, PDF report export, and secure biometric authentication simulation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
