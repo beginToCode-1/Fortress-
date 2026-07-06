@@ -203,6 +203,36 @@ export default function App() {
   const [monthlyIncome, setMonthlyIncome] = useState(5000);
   const [incomeInputStr, setIncomeInputStr] = useState("");
   
+  // Personalized welcome animation states
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [motivationalQuote, setMotivationalQuote] = useState("");
+  const prevIsLocked = useRef(profile.isLocked);
+
+  useEffect(() => {
+    // List of wealth-building motivational messages
+    const MOTIVATIONAL_QUOTES = [
+      "Your wealth is a fortress built stone by stone. Let's make today another day of disciplined financial choices.",
+      "Every small saving is a seed planted for your future. Keep tracking, keep optimizing, and watch your capital blossom.",
+      "Abundance is a state of active discipline. Your fortress grows stronger with every transaction you align with your goals.",
+      "Compound growth is the quiet force of financial freedom. Let's master your cash flow today and secure tomorrow.",
+      "Abundance is built on mindful tracking. Stay focused on your goals, prune discretionary leaks, and prosper day by day.",
+      "Decisions made in the light protect your wealth in the shadows. Your commitment to financial transparency is your ultimate shield."
+    ];
+
+    if (prevIsLocked.current && !profile.isLocked) {
+      // Pick a random quote
+      const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+      setMotivationalQuote(MOTIVATIONAL_QUOTES[randomIndex]);
+      setShowWelcome(true);
+      
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 6500);
+      return () => clearTimeout(timer);
+    }
+    prevIsLocked.current = profile.isLocked;
+  }, [profile.isLocked]);
+  
   // Forms states
   const [newTx, setNewTx] = useState({
     description: "",
@@ -1271,25 +1301,7 @@ export default function App() {
                     >
                       0
                     </button>
-                    <div className="w-16 h-16 flex flex-col items-center justify-center mx-auto text-slate-500 font-mono text-[10px]">
-                      {showPinHint ? (
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPinHint(false)} 
-                          className="hover:text-slate-300 hover:underline text-[9px] bg-slate-900 border border-slate-800 rounded px-1.5 py-1 tracking-wider text-center cursor-pointer transition-all"
-                        >
-                          PIN: {profile.pinCode || "1234"}
-                        </button>
-                      ) : (
-                        <button 
-                          type="button" 
-                          onClick={() => setShowPinHint(true)} 
-                          className="hover:text-slate-300 hover:underline text-[9px] bg-slate-900/40 hover:bg-slate-900 border border-slate-850/80 rounded px-1.5 py-1 text-center cursor-pointer transition-all font-sans"
-                        >
-                          Show PIN
-                        </button>
-                      )}
-                    </div>
+                    <div className="w-16 h-16" />
                   </div>
 
                   {/* Biometrics Pulse Simulation Trigger */}
@@ -1560,6 +1572,144 @@ export default function App() {
                 </div>
               )}
 
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ✨ PERSONALIZED WELCOME REVEAL SCREEN */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+            className="fixed inset-0 bg-[#070707] z-50 flex flex-col items-center justify-center p-6 overflow-hidden select-none"
+          >
+            {/* Ambient Background Glows */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-emerald-500/10 blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-blue-500/5 blur-[100px] pointer-events-none" />
+
+            <div className="w-full max-w-md flex flex-col items-center text-center space-y-8 z-10">
+              {/* Spinning / Pulsing Logo Ring */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+                className="relative"
+              >
+                {/* Rotating decorative dotted ring */}
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+                  className="absolute -inset-4 rounded-full border border-dashed border-emerald-500/20"
+                />
+                
+                {/* Outer ring */}
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.15)]">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 5, -5, 0]
+                    }}
+                    transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+                  >
+                    <Wallet className="w-10 h-10 text-emerald-400" />
+                  </motion.div>
+                </div>
+
+                {/* Micro Sparkles icon */}
+                <motion.div
+                  animate={{ y: [-2, 2, -2], opacity: [0.5, 1, 0.5] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                  className="absolute -top-2 -right-2"
+                >
+                  <Sparkles className="w-5 h-5 text-emerald-300" />
+                </motion.div>
+              </motion.div>
+
+              {/* Welcoming Text Header */}
+              <div className="space-y-3">
+                <motion.p
+                  initial={{ y: 15, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="text-slate-500 font-mono text-[11px] tracking-[0.2em] uppercase"
+                >
+                  {(() => {
+                    const hour = new Date().getHours();
+                    if (hour < 12) return "Good morning";
+                    if (hour < 17) return "Good afternoon";
+                    return "Good evening";
+                  })()}
+                </motion.p>
+                <motion.h2
+                  initial={{ y: 15, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="text-2xl md:text-3xl font-bold tracking-tight text-white"
+                >
+                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 font-extrabold">{profile.name}</span>
+                </motion.h2>
+              </div>
+
+              {/* Separator Line */}
+              <motion.div 
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "60px", opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="h-0.5 bg-gradient-to-r from-emerald-500/50 to-transparent rounded-full"
+              />
+
+              {/* Motivational Quote */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="px-6 py-4 bg-slate-900/30 border border-slate-800/40 rounded-2xl relative"
+              >
+                <p className="text-slate-300 text-sm md:text-base leading-relaxed italic">
+                  "{motivationalQuote}"
+                </p>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b border-r border-emerald-500/20 rounded-br-2xl" />
+                <div className="absolute -top-1 -left-1 w-6 h-6 border-t border-l border-emerald-500/20 rounded-tl-2xl" />
+              </motion.div>
+
+              {/* Progress Indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="w-full max-w-xs space-y-2 pt-4"
+              >
+                <div className="flex justify-between text-[10px] font-mono text-slate-500">
+                  <span>UNSEALING PORTAL</span>
+                  <span>100% SECURE</span>
+                </div>
+                {/* Simple animated bar */}
+                <div className="h-1 bg-slate-900 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "0%" }}
+                    transition={{ duration: 5.8, ease: "easeInOut" }}
+                    className="h-full w-full bg-gradient-to-r from-emerald-500 to-teal-400"
+                  />
+                </div>
+                <p className="text-[9px] text-slate-600 font-mono italic">Synchronizing Fortress database ledger nodes...</p>
+              </motion.div>
+
+              {/* Skip button for busy power users */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                whileHover={{ opacity: 0.9, scale: 1.05 }}
+                onClick={() => setShowWelcome(false)}
+                className="text-[10px] text-slate-400 font-mono tracking-wider hover:underline flex items-center gap-1 cursor-pointer pt-4"
+              >
+                SKIP INTRO <ChevronRight className="w-3 h-3" />
+              </motion.button>
             </div>
           </motion.div>
         )}
